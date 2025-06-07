@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Success Planner</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      color: #00bcd4;
+    }
+    .section {
+      margin-bottom: 2em;
+    }
+    .goal-list li {
+      margin-bottom: 8px;
+    }
+    
+    /* Desktop layout with pomodoro on the right */
+    .main-container {
+      display: flex;
+      gap: 20px;
+    }
+    .content-left {
+      flex: 2;
+    }
+    .content-right {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .pomodoro {
+      padding: 1em;
+      border: 1px solid #00bcd4;
+      border-radius: 10px;
+      text-align: center;
+      background-color: #1a1a1a;
+      position: sticky;
+      top: 20px;
+    }
+    .timer {
+      font-size: 3em;
+      margin: 20px 0;
+      color: #00bcd4;
+    }
+    .timer-controls {
+      margin: 15px 0;
+    }
+    .timer-controls input {
+      background-color: #333;
+      color: #f0f0f0;
+      border: 1px solid #00bcd4;
+      border-radius: 5px;
+      padding: 5px;
+      width: 60px;
+      text-align: center;
+      margin: 0 5px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #121212;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #00acc1;
+    }
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+    
+    /* Enhanced checklist */
+    .checklist {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    .checklist label {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .checklist label:hover {
+      background-color: #333;
+    }
+    .checklist input[type="checkbox"] {
+      margin-right: 15px;
+      transform: scale(1.2);
+      accent-color: #00bcd4;
+    }
+    .checklist input[type="checkbox"]:checked + .task-text {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .task-text {
+      flex: 1;
+    }
+    .task-time {
+      color: #00bcd4;
+      font-size: 0.9em;
+      margin-left: 10px;
+    }
+    
+    .motivation {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #00bcd4;
+    }
+    
+    .study-progress {
+      margin: 10px 0;
+      font-size: 0.9em;
+      color: #00bcd4;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      .main-container {
+        flex-direction: column;
+      }
+      .content-right {
+        min-width: auto;
+      }
+      .pomodoro {
+        position: static;
+      }
+      .timer {
+        font-size: 2em;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+      }
+      h1,h2,h3 {
+        justify-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎓 Exam Success Planner</h1>
+
+  <div class="main-container">
+    <div class="content-left">
+
+      <div class="section">
+        <h2>💕 Remember</h2>
+        <div class="motivation">
+          "Remember, you have a good girlfriend that wants you to succeed! 💪❤️"
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🎯 Goals</h2>
+        <ul class="goal-list">
+          <li>✅ Current ECTS: <strong>50.5</strong></li>
+          <li>🎯 Target: <strong>54+ ECTS</strong> to pass (or 60 for auto success)</li>
+          <li>📘 Prioritize: FAPA (needs 17), MDF (needs 15.5)</li>
+          <li>🟡 Secondary: MPI (needs 10), MMC (needs 12)</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>📅 Daily Study Plan</h2>
+        <p>Follow this plan with flexibility. Prioritize FAPA & MDF, then MPI/MMC if possible.</p>
+        <ul class="goal-list">
+          <li>09:30 – 11:00 → FAPA (Pomodoro x3)</li>
+          <li>11:15 – 12:45 → MDF (Pomodoro x3)</li>
+          <li>14:00 – 15:30 → FAPA/MDF Practice</li>
+          <li>16:00 – 17:30 → Light MMC/MPI (if needed)</li>
+          <li>Evening → Call GF / Walking Dead / Chill</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>✅ Today's Tasks</h2>
+        <div class="checklist">
+          <label>
+            <input type="checkbox" onchange="updateProgress()">
+            <span class="task-text">FAPA Morning Session</span>
+            <span class="task-time">1.5h</span>
+          </label>
+          <label>
+            <input type="checkbox" onchange="updateProgress()">
+            <span class="task-text">MDF Morning Session</span>
+            <span class="task-time">1.5h</span>
+          </label>
+          <label>
+            <input type="checkbox" onchange="updateProgress()">
+            <span class="task-text">Practice Problems</span>
+            <span class="task-time">1.5h</span>
+          </label>
+          <label>
+            <input type="checkbox" onchange="updateProgress()">
+            <span class="task-text">Light Review (MMC/MPI)</span>
+            <span class="task-time">1.5h</span>
+          </label>
+          <label>
+            <input type="checkbox" onchange="updateProgress()">
+            <span class="task-text">Review notes and plan tomorrow</span>
+            <span class="task-time">30min</span>
+          </label>
+        </div>
+        <div id="progress-summary" style="margin-top: 15px; padding: 10px; background-color: #2a2a2a; border-radius: 8px; text-align: center;">
+          Progress: <span id="progress-count">0/5</span> tasks completed
+        </div>
+      </div>
+
+    </div>
+
+    <div class="content-right">
+      <div class="pomodoro">
+        <h2>⏱️ Pomodoro Timer</h2>
+        <div id="session-type">Study Session</div>
+        <div class="timer" id="timer">25:00</div>
+        <div id="pomodoro-count">25min Sessions: 0</div>
+        <div class="study-progress" id="study-progress">Total Study Time: 0 min</div>
+        
+        <div class="timer-controls">
+          <label for="total-study-minutes">Total Study:</label>
+          <input type="number" id="total-study-minutes" value="90" min="25" max="480">
+          <span>min</span>
+          <br><br>
+          <label for="break-minutes">Break:</label>
+          <input type="number" id="break-minutes" value="5" min="1" max="30">
+          <span>min</span>
+        </div>
+        
+        <button id="start-btn" onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()" id="pause-btn" disabled>Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio element for bell sound -->
+  <audio id="bell-sound" preload="auto">
+    <source src="bell.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let timer;
+    let minutes = 25;
+    let seconds = 0;
+    let isRunning = false;
+    let isPaused = false;
+    let isBreak = false;
+    let pomodoroCount = 0;
+    let totalStudyTimeMinutes = 0;
+    let currentSessionStartTime = 25;
+
+    function playBell() {
+      const bell = document.getElementById('bell-sound');
+      bell.currentTime = 0; // Reset to beginning
+      bell.play().catch(e => console.log('Could not play bell sound:', e));
+    }
+
+    function updateDisplay() {
+      document.getElementById('timer').textContent = 
+        String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+      
+      const sessionType = isBreak ? '☕ Break Time' : '📚 Study Session';
+      document.getElementById('session-type').textContent = sessionType;
+      document.getElementById('pomodoro-count').textContent = `25min Sessions: ${pomodoroCount}`;
+      document.getElementById('study-progress').textContent = `Total Study Time: ${totalStudyTimeMinutes} min`;
+    }
+
+    function startTimer() {
+      if (isRunning && !isPaused) return;
+      
+      if (!isRunning && !isPaused) {
+        // Starting fresh session
+        if (!isBreak) {
+          minutes = 25;
+          currentSessionStartTime = 25;
+        } else {
+          const breakMinutes = parseInt(document.getElementById('break-minutes').value);
+          minutes = breakMinutes;
+          currentSessionStartTime = breakMinutes;
+        }
+        seconds = 0;
+      }
+      
+      isRunning = true;
+      isPaused = false;
+      
+      document.getElementById('start-btn').disabled = true;
+      document.getElementById('pause-btn').disabled = false;
+      
+      timer = setInterval(() => {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            // Timer finished
+            clearInterval(timer);
+            isRunning = false;
+            playBell();
+            
+            if (!isBreak) {
+              // Just finished a 25-min study session
+              pomodoroCount++;
+              totalStudyTimeMinutes += 25;
+              
+              const totalStudyTarget = parseInt(document.getElementById('total-study-minutes').value);
+              
+              if (totalStudyTimeMinutes >= totalStudyTarget) {
+                // Reached total study goal
+                setTimeout(() => {
+                  playBell();
+                  alert(`🎉 Congratulations! You've completed ${totalStudyTimeMinutes} minutes of study time!`);
+                }, 100);
+                resetTimer();
+                return;
+              } else {
+                // Start break
+                startBreak();
+                return;
+              }
+            } else {
+              // Just finished a break
+              startStudySession();
+              return;
+            }
+          }
+          minutes--;
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (isRunning) {
+        clearInterval(timer);
+        isPaused = true;
+        isRunning = false;
+        document.getElementById('start-btn').disabled = false;
+        document.getElementById('pause-btn').disabled = true;
+      }
+    }
+
+    function startBreak() {
+      isBreak = true;
+      const breakMinutes = parseInt(document.getElementById('break-minutes').value);
+      minutes = breakMinutes;
+      seconds = 0;
+      currentSessionStartTime = breakMinutes;
+      updateDisplay();
+      
+      // Auto-start break
+      setTimeout(() => {
+        startTimer();
+      }, 1000);
+    }
+
+    function startStudySession() {
+      isBreak = false;
+      minutes = 25;
+      seconds = 0;
+      currentSessionStartTime = 25;
+      updateDisplay();
+      
+      // Auto-start study session
+      setTimeout(() => {
+        startTimer();
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      minutes = 25;
+      seconds = 0;
+      isRunning = false;
+      isPaused = false;
+      isBreak = false;
+      pomodoroCount = 0;
+      totalStudyTimeMinutes = 0;
+      currentSessionStartTime = 25;
+      
+      document.getElementById('start-btn').disabled = false;
+      document.getElementById('pause-btn').disabled = true;
+      
+      updateDisplay();
+    }
+
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+      const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+      const total = checkboxes.length;
+      
+      document.getElementById('progress-count').textContent = `${completed}/${total}`;
+      
+      if (completed === total) {
+        document.getElementById('progress-summary').innerHTML = 
+          '🎉 <strong style="color: #00bcd4;">All tasks completed! Great job!</strong>';
+      } else {
+        document.getElementById('progress-summary').innerHTML = 
+          `Progress: <span id="progress-count">${completed}/${total}</span> tasks completed`;
+      }
+    }
+
+    // Initialize display
+    updateDisplay();
+  </script>
+</body>
+</html>
